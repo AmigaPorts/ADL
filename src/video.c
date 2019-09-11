@@ -17,16 +17,14 @@
 #include <proto/dos.h>
 #include <proto/graphics.h>
 
-
 #include <cybergraphx/cybergraphics.h>
 #include <proto/cybergraphics.h>
 #include <math.h>
 #include "video.h"
-#include "amigaport.h"
 #include "timer.h"
 #include "canvas.h"
 #include "control.h"
-
+#include <string.h>
 
 #define REG(xn, parm) parm __asm(#xn)
 #define REGARGS __regargs
@@ -44,31 +42,20 @@ extern void REGARGS c2p1x1_8_c5_bm_040(REG(d0, UWORD chunky_x), REG(d1, UWORD ch
 extern void REGARGS c2p1x1_8_c5_bm(REG(d0, UWORD chunky_x), REG(d1, UWORD chunky_y), REG(d2, UWORD offset_x), REG(d3, UWORD offset_y), REG(a0, UBYTE *chunky_buffer), REG(a1, struct BitMap *bitmap));
 
 /*
- * cachemodes
- */
-
-#define CM_IMPRECISE ((1<<6)|(1<<5))
-#define CM_PRECISE   (1<<6)
-#define CM_COPYBACK  (1<<5)
-#define CM_WRITETHROUGH 0
-#define CM_MASK      ((1<<6)|(1<<5))
-
-
-/*
  * functions
  */
 
 extern UBYTE REGARGS mmu_mark(REG(a0, void *start), REG(d0, ULONG length), REG(d1, ULONG cm), REG(a6, struct ExecBase *SysBase));
 
 int colorKey = 0;
-static int isRTG = 0, mode = 0, isInitialized = 0;
+static int isInitialized = 0;
 static ULONG colorsAGA[770];
 
 /** Hardware window */
 struct Window *_hardwareWindow;
 /** Hardware screen */
 struct Screen *_hardwareScreen;
-// Hardware double buffering.
+/** Hardware double buffering */
 struct ScreenBuffer *_hardwareScreenBuffer[2];
 BYTE _currentScreenBuffer;
 
@@ -81,7 +68,6 @@ enum videoMode {
 	VideoModeAGA,
 	VideoModeRTG
 };
-
 
 enum videoMode vidMode = VideoModeAGA;
 
@@ -195,12 +181,7 @@ void start_aga(int width, int height, int bpp) {
 }
 
 SDL_Surface *SDL_SetVideoMode(int width, int height, int bpp, uint32_t flags) {
-
-	unsigned char *pix;
-	char titlebuffer[256];
 	static int firsttime = 1;
-	uint i = 0;
-
 
 	_hardwareWindow = NULL;
 	_hardwareScreenBuffer[0] = NULL;
@@ -209,17 +190,15 @@ SDL_Surface *SDL_SetVideoMode(int width, int height, int bpp, uint32_t flags) {
 	_hardwareScreen = NULL;
 
 
-	if ( height == 480 ) mode = 1;
-
+	if ( height == 480 ) vidMode = VideoModeRTG;
 
 	if ( firsttime ) {
 		firsttime = 0;
 
-		if ( isRTG ) {
-			vidMode = VideoModeRTG;
+		if ( vidMode == VideoModeRTG ) {
 			start_rtg(width, height, bpp);
 		} else {
-			vidMode = VideoModeAGA;
+
 			start_aga(width, height, bpp);
 		}
 
@@ -330,7 +309,7 @@ int SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
 
 		row += dst->w;
 	}
-	//FreeVec(dstrect);
+
 	return (0);
 }
 
@@ -374,8 +353,7 @@ int SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_R
 		row += dst->w;
 		srcrow += src->w;
 	}
-	//FreeVec(dstrect);
-	//FreeVec(srcrect);
+
 	return (0);
 }
 
@@ -399,17 +377,19 @@ SDL_Surface *SDL_DisplayFormat(SDL_Surface *surface) {
 }
 
 char *SDL_GetError(void) {
+	//Todo: This is a stub, needs work
 	return "";
 }
 
 int SDL_ShowCursor(int toggle) {
+	//Todo: This is a stub, needs work
 	return (0);
 }
 
 int SDL_Init(uint32_t flags) {
 	isInitialized = 1;
-	initTimer();
-	initControls();
+	InitTimer();
+	InitControls();
 	return (0);
 }
 
@@ -420,8 +400,8 @@ void SDL_FreeSurface(SDL_Surface *surface) {
 
 void SDL_Quit(void) {
 	if (isInitialized) {
-		destroyTimer();
-		destroyControls();
+		DestroyTimer();
+		DestroyControls();
 
 		if ( _hardwareWindow ) {
 			ClearPointer(_hardwareWindow);
@@ -438,7 +418,7 @@ void SDL_Quit(void) {
 		if ( _hardwareScreenBuffer[1] ) {
 			WaitBlit();
 			FreeScreenBuffer(_hardwareScreen, _hardwareScreenBuffer[1]);
-			_hardwareScreenBuffer[0] = NULL;
+			_hardwareScreenBuffer[1] = NULL;
 		}
 
 		if ( _hardwareScreen ) {

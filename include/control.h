@@ -153,9 +153,9 @@ typedef struct {
 	int kb_break;
 } s_playercontrols;
 
-void destroyControls();
+void DestroyControls();
 
-void initControls();
+void InitControls();
 
 int control_usejoy(int enable);
 

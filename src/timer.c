@@ -7,13 +7,12 @@
 #include <devices/timer.h>
 #include <proto/exec.h>
 
-
 static ULONG basetime = 0;
 struct MsgPort *timer_msgport;
 struct timerequest *timer_ioreq;
 struct Device *TimerBase;
 
-static int opentimer(ULONG unit) {
+static int OpenTimer(ULONG unit) {
 	timer_msgport = CreateMsgPort();
 	timer_ioreq = CreateIORequest(timer_msgport, sizeof(*timer_ioreq));
 	if ( timer_ioreq ) {
@@ -25,7 +24,7 @@ static int opentimer(ULONG unit) {
 	return 0;
 }
 
-static void closetimer(void) {
+static void CloseTimer(void) {
 	if ( TimerBase ) {
 		CloseDevice((APTR)timer_ioreq);
 
@@ -39,11 +38,11 @@ static void closetimer(void) {
 
 static struct timeval startTime;
 
-void timerStartup() {
+void StartupTimer() {
 	GetSysTime(&startTime);
 }
 
-ULONG getMilliseconds() {
+ULONG GetMilliseconds() {
 	struct timeval endTime;
 
 	GetSysTime(&endTime);
@@ -52,15 +51,10 @@ ULONG getMilliseconds() {
 	return (endTime.tv_secs * 1000 + endTime.tv_micro / 1000);
 }
 
-
-//
-// Same as I_GetTime, but returns time in milliseconds
-//
-
-int getTimeMS(void) {
+int GetTimeMS(void) {
 	ULONG ticks;
 
-	ticks = getMilliseconds();
+	ticks = GetMilliseconds();
 
 	if ( basetime == 0 )
 		basetime = ticks;
@@ -68,11 +62,8 @@ int getTimeMS(void) {
 	return ticks - basetime;
 }
 
-// Sleep for a specified number of ms
-
-
-void destroyTimer() {
-	closetimer();
+void DestroyTimer() {
+	CloseTimer();
 }
 
 void sleep(int ms) {
@@ -83,9 +74,9 @@ void waitVBL(int count) {
 	sleep((count * 1000) / 70);
 }
 
-void initTimer() {
-	opentimer(UNIT_VBLANK);
-	timerStartup();
+void InitTimer() {
+	OpenTimer(UNIT_VBLANK);
+	StartupTimer();
 }
 
 #define GETTIME_FREQ (1000)
@@ -94,11 +85,11 @@ static unsigned lastinterval = 0;
 
 
 uint32_t SDL_GetTicks() {
-	return getMilliseconds();
+	return GetMilliseconds();
 }
 
 
-unsigned timer_getinterval(unsigned freq) {
+unsigned GetInterval(unsigned freq) {
 	unsigned tickspassed, ebx, blocksize, now;
 	now = SDL_GetTicks();
 	ebx = now - lastinterval;

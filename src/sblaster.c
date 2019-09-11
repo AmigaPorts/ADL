@@ -1,13 +1,3 @@
-/*
- * OpenBOR - http://www.LavaLit.com
- * -----------------------------------------------------------------------
- * Licensed under the BSD license, see LICENSE in OpenBOR root for details.
- *
- * Copyright (c) 2004 - 2011 OpenBOR Team
- */
-
-// A soundblaster interface. No bugs?
-
 #include <exec/exec.h>
 #include <exec/io.h>
 #include <dos/dostags.h>
@@ -16,12 +6,9 @@
 #include <proto/dos.h>
 #include <proto/ahi.h>
 #include <proto/graphics.h>
-#include "amigaport.h"
 #include "sblaster.h"
-//#include "soundmix.h"
 
 #define USE_AHI_V4 TRUE
-
 
 #define SAMPLES_PER_SEC 44100
 

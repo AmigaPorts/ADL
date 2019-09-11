@@ -56,24 +56,19 @@ static unsigned long lastkey = 0;
 Reset All data back to Zero and
 destroy all SDL Joystick data.
 */
-void destroyControls() {
-
+void DestroyControls() {
 	if ( LowLevelBase ) {
 		CloseLibrary(LowLevelBase);
 		LowLevelBase = NULL;
 	}
 }
 
-
 /*
 Create default values for joysticks if enabled.
 Then scan for joysticks and update their data.
 */
-void initControls() {
-
+void InitControls() {
 	if ( !LowLevelBase ) LowLevelBase = (struct Library *)OpenLibrary((UBYTE *)"lowlevel.library", 0);
-
-
 }
 
 void control_rumble(int port, int msec) {
@@ -88,7 +83,6 @@ int control_usejoy(int enable) {
 	return 0;
 }
 
-
 /*
 Only used in openbor.c to get current status
 of joystick usage.
@@ -96,7 +90,6 @@ of joystick usage.
 int control_getjoyenabled() {
 	return 1;
 }
-
 
 /*
 Convert binary masked data to indexes
@@ -117,12 +110,10 @@ int keyboard_getlastkey() {
 
 }
 
-
 int control_scankey() {
 
-	return (getPad() & 0x3ff);
+	return getPad() & 0x3ff;
 }
-
 
 unsigned long getKey() {
 	struct IntuiMessage *imsg;
@@ -130,7 +121,8 @@ unsigned long getKey() {
 	UWORD Code;
 	int ret = 0;
 
-	if ( imsg = (struct IntuiMessage *)GetMsg(_hardwareWindow->UserPort)) {
+	imsg = (struct IntuiMessage *)GetMsg(_hardwareWindow->UserPort);
+	if ( imsg ) {
 		imsg_Class = imsg->Class;
 		Code = imsg->Code;
 		ReplyMsg((struct Message *)imsg);

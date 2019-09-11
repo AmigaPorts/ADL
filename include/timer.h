@@ -10,6 +10,6 @@
 #endif
 PROTOHEADER uint32_t SDL_GetTicks();
 PROTOHEADER void sleep(int ms);
-PROTOHEADER void initTimer(void);
-PROTOHEADER void destroyTimer(void);
+PROTOHEADER void InitTimer(void);
+PROTOHEADER void DestroyTimer(void);
 #endif //_TIMER_H
