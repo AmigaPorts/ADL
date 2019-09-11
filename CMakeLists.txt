@@ -9,34 +9,47 @@ if (VASM)
 	set(CMAKE_ASM_OUTPUT_EXTENSION ".o")
 	set(CMAKE_ASM_COMPILE_OBJECT "<CMAKE_ASM_COMPILER> <FLAGS> -o <OBJECT> <SOURCE>")
 	set(CMAKE_ASM_FLAGS "-m68030 -I${CMAKE_SYSROOT}/m68k-amigaos/ndk-include -Fhunk")
+else ()
+	message(ERROR "Could not find vasmm68k_mot! It is required to compile this library!")
+endif ()
 
 	project(ADL ASM C)
 
 	set(
 			SOURCES
-			c2p1x1_8_c5_bm.s
-			c2p1x1_8_c5_bm_040.s
-			control.c
-			timer.c
-			video.c
+			src/control.c
+			src/timer.c
+			src/video.c
 	)
+
+	if (WARPOS)
+		list(
+				APPEND
+				SOURCES
+				src/ppc/
+		)
+	elseif (AMIGAOS3)
+		list(
+				APPEND
+				SOURCES
+				src/68k/c2p1x1_8_c5_bm.s
+				src/68k/c2p1x1_8_c5_bm_040.s
+		)
+	endif ()
 
 	set(
 			HEADERS
-			SDL.h
-			control.h
-			joysticks.h
-			timer.h
-			video.h
+			include/SDL.h
+			include/control.h
+			include/joysticks.h
+			include/timer.h
+			include/video.h
 	)
 
 	include_directories(
-			${CMAKE_CURRENT_SOURCE_DIR}
+			${CMAKE_CURRENT_SOURCE_DIR}/include
 	)
 
-	set(${PROJECT_NAME}_INCLUDE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
+	set(${PROJECT_NAME}_INCLUDE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include PARENT_SCOPE)
 
 	add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS})
-else ()
-	message(ERROR "Could not find vasmm68k_mot! It is required to compile this library!")
-endif ()
