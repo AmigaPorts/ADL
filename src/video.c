@@ -367,7 +367,7 @@ SDL_Surface *SDL_CreateRGBSurfaceFrom(void *pixels, int width, int height, int d
 	surface = (SDL_Surface *)AllocVec(sizeof(SDL_Surface), MEMF_FAST);
 	surface->w = width;
 	surface->h = height;
-	surface->pixels = &pixels;
+	surface->pixels = pixels;
 
 	return surface;
 }
