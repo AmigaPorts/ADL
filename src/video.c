@@ -367,7 +367,7 @@ SDL_Surface *SDL_CreateRGBSurfaceFrom(void *pixels, int width, int height, int d
 	surface = (SDL_Surface *)AllocVec(sizeof(SDL_Surface), MEMF_FAST);
 	surface->w = width;
 	surface->h = height;
-	surface->pixels = pixels;
+	surface->pixels = &pixels;
 
 	return surface;
 }
@@ -387,6 +387,7 @@ int SDL_ShowCursor(int toggle) {
 }
 
 int SDL_Init(uint32_t flags) {
+	SetTaskPri(FindTask(NULL), 21);
 	isInitialized = 1;
 	InitTimer();
 	InitControls();
@@ -399,7 +400,7 @@ void SDL_FreeSurface(SDL_Surface *surface) {
 }
 
 void SDL_Quit(void) {
-	if (isInitialized) {
+	if ( isInitialized ) {
 		DestroyTimer();
 		DestroyControls();
 

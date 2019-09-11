@@ -192,7 +192,7 @@ int SB_playstart(int bits, int samplerate) {
 			NP_CloseOutput, FALSE,
 			NP_CloseInput, FALSE,
 			NP_StackSize, 20000,
-			NP_Entry, (ULONG) & sound_thread,
+			NP_Entry, (ULONG)&sound_thread,
 			TAG_DONE);
 
 

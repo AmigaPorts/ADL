@@ -13,43 +13,44 @@ else ()
 	message(ERROR "Could not find vasmm68k_mot! It is required to compile this library!")
 endif ()
 
-	project(ADL ASM C)
+project(ADL ASM C)
 
-	set(
+set(
+		SOURCES
+		src/control.c
+		src/timer.c
+		src/video.c
+)
+
+if (WARPOS)
+	list(
+			APPEND
 			SOURCES
-			src/control.c
-			src/timer.c
-			src/video.c
+			src/ppc/
 	)
-
-	if (WARPOS)
-		list(
-				APPEND
-				SOURCES
-				src/ppc/
-		)
-	elseif (AMIGAOS3)
-		list(
-				APPEND
-				SOURCES
-				src/68k/c2p1x1_8_c5_bm.s
-				src/68k/c2p1x1_8_c5_bm_040.s
-		)
-	endif ()
-
-	set(
-			HEADERS
-			include/SDL.h
-			include/control.h
-			include/joysticks.h
-			include/timer.h
-			include/video.h
+elseif (AMIGAOS3)
+	list(
+			APPEND
+			SOURCES
+			src/68k/c2p1x1_8_c5_bm.s
+			src/68k/c2p1x1_8_c5_bm_040.s
 	)
+endif ()
 
-	include_directories(
-			${CMAKE_CURRENT_SOURCE_DIR}/include
-	)
+set(
+		HEADERS
+		include/SDL.h
+		include/control.h
+		include/joysticks.h
+		include/timer.h
+		include/video.h
+)
 
-	set(${PROJECT_NAME}_INCLUDE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include PARENT_SCOPE)
+include_directories(
+		${CMAKE_CURRENT_SOURCE_DIR}/include
+)
 
-	add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+set(${PROJECT_NAME}_INCLUDE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include PARENT_SCOPE)
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -flto")
+
+add_library(${PROJECT_NAME} ${SOURCES} ${HEADERS})
