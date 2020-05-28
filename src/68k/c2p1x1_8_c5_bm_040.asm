@@ -1,5 +1,5 @@
 ;
-; File:   c2p1x1_8_c5_bm_040.s
+; File:   c2p1x1_8_c5_bm_040.asm
 ; Author: Mikael Kalms <mikael@kalms.org>
 ; Date:   17 April 2000
 ; Title:  C2P - 1x1, 8bpl, BitMap output, 040+ optimized
