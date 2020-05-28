@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 
 #include <proto/timer.h>
 #include <devices/timer.h>
@@ -66,12 +67,14 @@ void DestroyTimer() {
 	CloseTimer();
 }
 
+/*
 void sleep(int ms) {
 	usleep(ms);
-}
 
+}
+*/
 void waitVBL(int count) {
-	sleep((count * 1000) / 70);
+	usleep((count * 1000) / 70);
 }
 
 void InitTimer() {

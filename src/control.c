@@ -22,6 +22,7 @@
 #include <proto/timer.h>
 #include <proto/keymap.h>
 #include <proto/lowlevel.h>
+#include <unistd.h>
 
 #include "video.h"
 //#include "globals.h"
@@ -120,8 +121,10 @@ unsigned long getKey() {
 	ULONG imsg_Class;
 	UWORD Code;
 	int ret = 0;
-
+	//uint32_t signals = Wait(_hardwareWindow->UserPort->mp_SigBit);
+	//WaitPort(_hardwareWindow->UserPort);
 	imsg = (struct IntuiMessage *)GetMsg(_hardwareWindow->UserPort);
+
 	if ( imsg ) {
 		imsg_Class = imsg->Class;
 		Code = imsg->Code;
@@ -135,9 +138,7 @@ unsigned long getKey() {
 							break;
 					}
 				} else {
-					switch ( Code ) {
-
-					}
+					//ret = Code;
 				}
 		}
 	}

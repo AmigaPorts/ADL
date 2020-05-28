@@ -10,7 +10,7 @@
 #endif
 PROTOHEADER uint32_t SDL_GetTicks();
 
-PROTOHEADER void sleep(int ms);
+//PROTOHEADER void sleep(int ms);
 
 PROTOHEADER void InitTimer(void);
 

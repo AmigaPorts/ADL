@@ -40,7 +40,7 @@ C2P1X1_8_C5_BM_040_ROWMOD	rs.l	1
 C2P1X1_8_C5_BM_040_SIZEOF	rs.b	0
 
 
-	section	code,code
+	section	.text
 
 ; d0.w	chunkyx [chunky-pixels]
 ; d1.w	chunkyy [chunky-pixels]

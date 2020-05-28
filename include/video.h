@@ -5,8 +5,29 @@
 #else
 #define PROTOHEADER
 #endif
+#ifdef __cplusplus
+#define SDL_reinterpret_cast(type, expression) reinterpret_cast<type>(expression)
+#define SDL_static_cast(type, expression) static_cast<type>(expression)
+#else
+#define SDL_reinterpret_cast(type, expression) ((type)(expression))
+#define SDL_static_cast(type, expression) ((type)(expression))
+#endif
+#define SDL_VERSION_ATLEAST(X, Y, Z) false
+#define Uint64    uint64_t
+#define Uint32    uint32_t
+#define Uint16    uint16_t
+#define Uint8    uint8_t
+#define Sint32    int32_t
+#define Sint16    int16_t
+#define Sint8    int8_t
 
 #include <stdint.h>
+#include <graphics/gfx.h>
+
+typedef enum {
+	SDL_FALSE = 0,
+	SDL_TRUE = 1
+} SDL_bool;
 
 typedef struct SDL_Surface {
 //	Uint32 flags;				/**< Read-only */
@@ -36,6 +57,22 @@ typedef struct SDL_Surface {
 //	int refcount;				/**< Read-mostly */} SDL_Surface;
 } SDL_Surface;
 
+typedef enum {
+	KMOD_NONE = 0x0000,
+	KMOD_LSHIFT = 0x0001,
+	KMOD_RSHIFT = 0x0002,
+	KMOD_LCTRL = 0x0040,
+	KMOD_RCTRL = 0x0080,
+	KMOD_LALT = 0x0100,
+	KMOD_RALT = 0x0200,
+	KMOD_LMETA = 0x0400,
+	KMOD_RMETA = 0x0800,
+	KMOD_NUM = 0x1000,
+	KMOD_CAPS = 0x2000,
+	KMOD_MODE = 0x4000,
+	KMOD_RESERVED = 0x8000
+} SDLMod;
+
 typedef struct SDL_Color {
 	uint8_t r;
 	uint8_t g;
@@ -44,10 +81,19 @@ typedef struct SDL_Color {
 } SDL_Color;
 #define SDL_Colour SDL_Color
 
+typedef struct SDL_Palette {
+	int ncolors;
+	SDL_Color *colors;
+} SDL_Palette;
+
 typedef struct SDL_Rect {
 	int16_t x, y;
 	uint16_t w, h;
 } SDL_Rect;
+
+PROTOHEADER void waitFrame();
+PROTOHEADER void waitFrame2();
+PROTOHEADER int test();
 
 PROTOHEADER int SDL_Flip(SDL_Surface *);
 
@@ -101,14 +147,21 @@ PROTOHEADER SDL_Surface *SDL_DisplayFormat(SDL_Surface *surface);
 /*@}*/
 
 PROTOHEADER void SDL_FreeSurface(SDL_Surface *surface);
-
+PROTOHEADER void c2p(SDL_Surface *src, struct BitMap *output);
+PROTOHEADER void c2p2(SDL_Rect *srcrect, void *pixels, struct BitMap *output);
+PROTOHEADER void Print(const char *text);
 PROTOHEADER int SDL_SetColorKey(SDL_Surface *surface, uint32_t flag, uint32_t key);
 
+PROTOHEADER void ADL_BlitBitPlane(struct BitMap *pixels, SDL_Rect *srcrect, SDL_Rect *dstrect);
 PROTOHEADER int SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect);
 
+PROTOHEADER int ADL_FillRect(SDL_Rect *dstrect, uint32_t color);
 PROTOHEADER int SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color);
 
 PROTOHEADER int SDL_SetPalette(SDL_Surface *surface, int flags, SDL_Color *colors, int firstcolor, int ncolors);
+
+PROTOHEADER int ADL_SetPalette(const unsigned char *colors, int firstcolor, int ncolors);
+
 
 PROTOHEADER SDL_Surface *SDL_SetVideoMode(int width, int height, int bpp, uint32_t flags);
 
